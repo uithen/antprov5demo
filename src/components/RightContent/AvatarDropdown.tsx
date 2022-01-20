@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import {
   LogoutOutlined,
   SettingOutlined,
@@ -12,7 +12,7 @@ import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 import { outLogin } from '@/services/ant-design-pro/api';
 import type { MenuInfo } from 'rc-menu/lib/interface';
-import { todo } from '@/services/todo-list';
+import { connect } from 'dva';
 
 export type GlobalHeaderRightProps = {
   menu?: boolean;
@@ -36,16 +36,25 @@ const loginOut = async () => {
   }
 };
 
-const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
+const AvatarDropdown: React.FC<GlobalHeaderRightProps> = (props) => {
+  const { menu, todo, dispatch }: any = props;
   const { initialState, setInitialState } = useModel('@@initialState');
+  // 方式三： 使用dva
+  useEffect(() => {
+    dispatch({
+      type: 'todo/getTodoList',
+      payload: null,
+    });
+  }, [dispatch]);
+  const count = todo.todoList?.filter((item: any) => item.status === 2).length;
 
-  // 方式二：使用全局状态useModel，适合一个状态多个组件共享
+  // 方式二(未成功实现)：使用全局状态useModel，适合一个状态多个组件共享
   // 获取全部列表
-  const { todoList }: any = useModel<any, any>('useTodo', (useTodo) => ({
-    todoList: useTodo.todoList,
-  }));
+  // const { todoList }: any = useModel<any, any>('useTodo', (useTodo) => ({
+  //   todoList: useTodo.todoList,
+  // }));
   // 筛选出待办事项（status等于2为待办）
-  const count = todoList.filter((item: any) => item.status === 2).length;
+  // const count = todoList.filter((item: any) => item.status === 2).length;
 
   //  方式一：传统做法，适合只在仅一个组件内使用的状态
   // const [todoCount, setTodoCount] = useState(0);
@@ -59,7 +68,6 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
   //   }
   //   getTodoCount();
   // });
-
   const onMenuClick = useCallback(
     (event: MenuInfo) => {
       const { key } = event;
@@ -142,4 +150,4 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
   );
 };
 
-export default AvatarDropdown;
+export default connect(({ todo }: any) => ({ todo }))(AvatarDropdown);

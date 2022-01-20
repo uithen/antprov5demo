@@ -4,7 +4,7 @@ export default function useTodo() {
   const [todoList, setTodoList] = useState([]);
   useEffect(() => {
     async function fetchListData() {
-      const data = await todo.getList();
+      const data = await todo.getTodoList();
       setTodoList(data);
     }
     fetchListData();
