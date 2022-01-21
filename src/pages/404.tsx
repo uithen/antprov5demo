@@ -5,11 +5,11 @@ import { history } from 'umi';
 const NoFoundPage: React.FC = () => (
   <Result
     status="404"
-    title="404"
-    subTitle="Sorry, the page you visited does not exist."
+    title="您访问的页面好像去"
+    subTitle="浪迹天涯了..."
     extra={
       <Button type="primary" onClick={() => history.push('/')}>
-        Back Home
+        返回首页
       </Button>
     }
   />
